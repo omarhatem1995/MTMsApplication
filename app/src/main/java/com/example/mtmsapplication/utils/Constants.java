@@ -1,4 +1,6 @@
-package com.example.mtmsapplication;
+package com.example.mtmsapplication.utils;
+
+import com.example.mtmsapplication.BuildConfig;
 
 public class Constants {
 
