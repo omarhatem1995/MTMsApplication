@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -15,6 +17,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsUtils {
 
@@ -73,6 +79,52 @@ public class MapsUtils {
         return bitmap;
     }
 
+    public static String getLocationAddress(LatLng latLng, Context context) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        String finalAddress = "Un defined Location";
+
+        try {
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+
+            if (addresses.size() > 0) {
+
+                finalAddress = "";
+
+                String knownName = addresses.get(0).getFeatureName() + "";
+                String streetName = addresses.get(0).getThoroughfare() + "";
+                String cityName = addresses.get(0).getSubAdminArea() + "";
+
+
+                finalAddress += knownName.trim() + ", ";
+
+                if (!streetName.equals(knownName))
+                    finalAddress += streetName.trim() + ", ";
+
+                if (!streetName.equals(cityName) && !cityName.equals(knownName))
+                    finalAddress += cityName.trim();
+
+                if (finalAddress.contains(" null,"))
+                    finalAddress = finalAddress.replace("null,", "");
+
+                else if (finalAddress.contains(", null"))
+                    finalAddress = finalAddress.replaceAll(", null", "");
+
+                if (String.valueOf(finalAddress.charAt(finalAddress.trim().length() - 1)).equals(","))
+                    finalAddress = finalAddress.replaceAll(",", "");
+
+
+            }
+
+        } catch (IOException e) {
+            //Toast.makeText(context, R.string.problem_getting_address, Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            return "Undefined Location";
+        }
+
+            return finalAddress;
+
+    }
 
 
 }

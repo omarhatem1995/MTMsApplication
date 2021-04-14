@@ -4,14 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -42,8 +39,6 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -51,16 +46,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import static android.widget.LinearLayout.HORIZONTAL;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener,
         OnAddressItemClickListener {
 
-    private ImageView menuIcon;
+    private ImageView menuIcon , backIcon;
     private TextView placeTxt;
     private EditText yourLocation;
     private NavigationView navigationView;
@@ -75,8 +67,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private OnAddressItemClickListener onAddressItemClickListener;
     private String locationFullAddress = "null";
     private int icon;
-    private List<SourceLocation> sourceLocationList = new ArrayList<>();
 
+    private List<SourceLocation> sourceLocationList = new ArrayList<>();
+    private SourceLocation sourceLocation = new SourceLocation();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void initViews() {
         menuIcon = findViewById(R.id.menu_icon);
+        backIcon = findViewById(R.id.back_icon);
+
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.nav_view);
         yourLocation = findViewById(R.id.yourlocation_editext);
@@ -102,11 +97,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         navigationView.setNavigationItemSelectedListener(this);
         menuIcon.setOnClickListener(this);
+        backIcon.setOnClickListener(this);
 
         yourLocation.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 setAdapter();
+                changeIcons();
                 return false;
             }
         });
@@ -129,6 +126,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setHasFixedSize(true);
+    }
+
+    private void changeIcons(){
+        backIcon.setVisibility(View.VISIBLE);
+        menuIcon.setVisibility(View.INVISIBLE);
     }
 
     private void initGooglePlaces() {
@@ -157,8 +159,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         MapsUtils.zoomMap(destinationPlaceLocation, mMap);
 
                         marker = MapsUtils.addCustomizedMarker(latLng, "Destination Place", MapsActivity.this, icon, mMap);
-
-
                     }
 
                     @Override
@@ -174,6 +174,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addressList_adapter = new AddressList_Adapter(getApplicationContext(),
                 sourceLocationList,this);
         recyclerView.setAdapter(addressList_adapter);
+        recyclerView.setVisibility(View.VISIBLE);
+
+    }
+
+    private void hideRecyclerView(){
+        recyclerView.setVisibility(View.GONE);
+        backIcon.setVisibility(View.INVISIBLE);
+        menuIcon.setVisibility(View.VISIBLE);
     }
 
     private void getAddressesList() {
@@ -187,12 +195,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("LogTAG", document.getId() + " => " + document.getData().get("name"));
-                                SourceLocation sourceLocation = new SourceLocation();
-                                sourceLocation.setName(document.getData().get("name").toString());
-                                sourceLocation.setLatitude(document.getData().get("latitude").toString());
-                                sourceLocation.setLogitude(document.getData().get("longitude").toString());
+                                SourceLocation address = new SourceLocation();
+                                address.setName(document.getData().get("name").toString());
+                                address.setLatitude((Double) document.getData().get("latitude"));
+                                address.setLongitude((Double) document.getData().get("longitude"));
 
-                                sourceLocationList.add(sourceLocation);
+                                sourceLocationList.add(address);
 
                             }
 
@@ -232,6 +240,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case R.id.menu_icon:
                 openSideMenu();
                 break;
+            case R.id.back_icon:
+                hideRecyclerView();
+                break;
         }
     }
 
@@ -241,8 +252,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(int position,String name,double lat,double lon) {
         Toast.makeText(this, position + " is clicked", Toast.LENGTH_SHORT).show();
-        Log.d("itemisClicked","is called");
+        Log.d("itemisClicked","is called" + name + " , " + lat + " , "+lon);
+        hideRecyclerView();
+        yourLocation.setText(name);
+        sourceLocation.setName(name);
+        sourceLocation.setLatitude(lat);
+        sourceLocation.setLongitude(lon);
+
     }
 }

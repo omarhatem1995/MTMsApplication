@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.example.mtmsapplication.R;
 import com.example.mtmsapplication.model.SourceLocation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -75,7 +74,10 @@ public class AddressList_Adapter extends RecyclerView.Adapter<AddressList_Adapte
                 public void onClick(View view) {
                     Log.d("dododod", position / 2 + "");
 
-                    onAddressItemClickListener.onItemClick(position / 2);
+                    onAddressItemClickListener.onItemClick(position / 2,
+                            sourceLocation.get(position/2).getName(),
+                            sourceLocation.get(position/2).getLatitude(),
+                            sourceLocation.get(position/2).getLongitude());
                 }
             });
 
