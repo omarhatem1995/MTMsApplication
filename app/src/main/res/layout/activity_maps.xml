@@ -123,6 +123,7 @@
     tools:context=".ui.MapsActivity" />
 
     <Button
+        android:id="@+id/requestrd_btn"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="48dp"
@@ -134,6 +135,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <ImageView
+        android:id="@+id/ic_gps"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/view_background_white_rounded"
+        android:padding="16dp"
+        android:visibility="visible"
+        android:elevation="10dp"
+        android:src="@drawable/ic_my_location"
+        app:layout_constraintBottom_toTopOf="@id/requestrd_btn"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
