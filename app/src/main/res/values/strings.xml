@@ -12,4 +12,5 @@
     <string name="app_location_permission">App Location Permission</string>
     <string name="location_permission_msg">You need to allow permission ALL THE TIME to use the application</string>
     <string name="please_try_again">Please try again</string>
+    <string name="please_allow_location_permission">Please allow location permission</string>
 </resources>
