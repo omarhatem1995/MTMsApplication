@@ -150,6 +150,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         navigationView.setNavigationItemSelectedListener(this);
         menuIcon.setOnClickListener(this);
         backIcon.setOnClickListener(this);
+        mGps.setOnClickListener(this);
 
         yourLocation.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -162,11 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        mGps.setOnClickListener(this);
-
-
         setUpAddressList();
-
     }
 
     private void initMaps() {
@@ -255,8 +252,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()), 15));
                         zoomMapOnlyOnce = false;
 
-
-                        Log.d("last_location","saved");
                     }
                 }
 
@@ -326,9 +321,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         destinationLocation.setLatitude(destinationPlaceLocation.getLatitude());
                         destinationLocation.setLongitude(destinationPlaceLocation.getLongitude());
 
-                        Log.d("destinationLocation",destinationLocation.getName()+" , "
-                        +destinationLocation.getLatitude()+ " , " + destinationLocation.getLongitude());
-
                         MapsUtils.zoomMap(destinationPlaceLocation, mMap);
 
                         marker = MapsUtils.addCustomizedMarker(latLng, "Destination Place", MapsActivity.this, icon, mMap);
@@ -389,15 +381,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     private void getCurrentLocation() {
         if (mLocationPermissionGranted)
             if (isLocationEnabled(MapsActivity.this)) {
@@ -417,8 +400,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //MapsUtils.setMapStyle(mMap,this);
-
         getLocationPermission();
 
         mMap.getUiSettings().setCompassEnabled(false);
@@ -429,7 +410,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationRequest.setFastestInterval(500); // 1 second, in milliseconds
 
         if (mLocationPermissionGranted) {
-
 
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
@@ -442,8 +422,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
         } else
-
-
         return;
     }
 
