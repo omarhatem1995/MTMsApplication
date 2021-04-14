@@ -11,21 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,7 +31,6 @@ import com.example.mtmsapplication.R;
 import com.example.mtmsapplication.adapter.AddressList_Adapter;
 import com.example.mtmsapplication.adapter.OnAddressItemClickListener;
 import com.example.mtmsapplication.model.SourceLocation;
-import com.example.mtmsapplication.utils.Constants;
 import com.example.mtmsapplication.utils.MapsUtils;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
@@ -55,10 +46,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -108,7 +97,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Marker marker , markerYourLocation;
 
-    private OnAddressItemClickListener onAddressItemClickListener;
     private String locationFullAddress = "null";
     private int icon;
 
@@ -124,10 +112,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         initViews();
 
-
         getLocationPermission();
         enableGPS();
-
 
         getAddressesList();
     }
@@ -367,7 +353,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 address.setLongitude((Double) document.getData().get("longitude"));
 
                                 sourceLocationList.add(address);
-
                             }
 
                         } else {
@@ -454,7 +439,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onItemClick(int position,String name,double lat,double lon) {
-
         hideRecyclerView();
         yourLocation.setText(name);
         sourceLocation.setName(name);
@@ -473,7 +457,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latlng = new LatLng(yourPlaceLocation.getLatitude(), yourPlaceLocation.getLongitude());
 
         markerYourLocation = MapsUtils.addCustomizedMarker(latlng, "Your Location", MapsActivity.this, icon, mMap);
-
-
     }
 }

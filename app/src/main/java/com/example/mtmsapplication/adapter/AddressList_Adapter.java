@@ -67,13 +67,10 @@ public class AddressList_Adapter extends RecyclerView.Adapter<AddressList_Adapte
         if (holder.mViewType == VIEW_TYPE_ITEM)
             holder.addressName.setText(sourceLocation.get(position / 2).getName());
 
-        Log.d("dododod", position / 2 + "");
         if (holder.constraintLayout != null)
             holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("dododod", position / 2 + "");
-
                     onAddressItemClickListener.onItemClick(position / 2,
                             sourceLocation.get(position/2).getName(),
                             sourceLocation.get(position/2).getLatitude(),
